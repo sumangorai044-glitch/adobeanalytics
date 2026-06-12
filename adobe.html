@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adobe Analytics Tracking Sandbox</title>
+    <style>
+        :root {
+            --bg-primary: #111827;
+            --bg-secondary: #1f2937;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        h1 { margin-bottom: 0.5rem; color: #fff; }
+        p { color: var(--text-muted); margin-top: 0; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        @media (min-width: 768px) {
+            .grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        .card {
+            background-color: var(--bg-secondary);
+            border: 1px solid #374151;
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.25rem;
+            border-bottom: 1px solid #374151;
+            padding-bottom: 0.5rem;
+        }
+
+        .btn {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+            font-weight: 600;
+        }
+        .btn:hover { background-color: var(--accent-hover); }
+
+        .link-element {
+            display: inline-block;
+            color: #60a5fa;
+            text-decoration: none;
+            margin: 0.5rem 0;
+            font-weight: 500;
+        }
+        .link-element:hover { text-decoration: underline; }
+
+        /* Console styling */
+        .console-card {
+            grid-column: 1 / -1;
+        }
+        .console-log {
+            background-color: #030712;
+            border: 1px solid #1f2937;
+            border-radius: 6px;
+            padding: 1rem;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 0.875rem;
+            max-height: 250px;
+            overflow-y: auto;
+            color: #4ade80;
+        }
+        .log-entry {
+            margin-bottom: 0.5rem;
+            border-left: 3px solid var(--accent);
+            padding-left: 0.5rem;
+        }
+        .log-entry.pageview { border-color: var(--success); }
+        .log-entry.click { border-color: var(--warning); }
+        
+        .json-key { color: #f39c12; }
+        .json-string { color: #2ecc71; }
+        .json-number { color: #3498db; }
+    </style>
+
+    <!-- 1. ADOBE DATA LAYER INITIALIZATION -->
+    <script>
+        // Customer Experience Digital Data Layer (CEDDL) format preferred by Adobe
+        window.digitalData = {
+            page: {
+                pageInfo: {
+                    pageName: "Sandbox: Rule Implementation Home",
+                    siteSection: "Analytics Education",
+                    server: "production-server-01"
+                }
+            },
+            user: {
+                profile: {
+                    attributes: {
+                        loggedInStatus: "anonymous"
+                    }
+                }
+            }
+        };
+
+        // Mocking Adobe's global s object for local simulation purposes
+        window.s = {
+            t: function() {
+                logAdobeBeacon("Pageview Beacon (s.t)", {
+                    pageName: window.digitalData.page.pageInfo.pageName,
+                    channel: window.digitalData.page.pageInfo.siteSection,
+                    server: window.digitalData.page.pageInfo.server
+                }, "pageview");
+            },
+            tl: function(element, linkType, linkName, contextData) {
+                logAdobeBeacon(`Custom Link Beacon (s.tl) - Type: ${linkType}`, {
+                    linkName: linkName,
+                    linkType: linkType,
+                    ...contextData
+                }, "click");
+            }
+        };
+
+        // Real-time UI logger helper
+        function logAdobeBeacon(title, data, type) {
+            setTimeout(() => {
+                const consoleDiv = document.getElementById('consoleLog');
+                if(!consoleDiv) return;
+                
+                const entry = document.createElement('div');
+                entry.className = `log-entry ${type}`;
+                
+                const timestamp = new Date().toLocaleTimeString();
+                let html = `<strong>[${timestamp}] ${title} fired successfully</strong><br>`;
+                html += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                
+                entry.innerHTML = html;
+                consoleDiv.insertBefore(entry, consoleDiv.firstChild);
+            }, 100);
+        }
+    </script>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Adobe Analytics Rule Tester</h1>
+            <p>A playground to see Pageviews, Link Clicks, and Button Clicks interact with the Data Layer.</p>
+        </header>
+
+        <div class="grid">
+            <!-- PAGEVIEW DEMO -->
+            <div class="card">
+                <h2>1. Pageview Rule</h2>
+                <p>In Adobe Launch, this rule is triggered by a <strong>Core - Library Loaded (Page Top)</strong> or <strong>Page Bottom</strong> event.</p>
+                <p>It automatically reads the global <code>digitalData</code> object and executes an <code>s.t()</code> call.</p>
+                <button class="btn" style="background-color: var(--success);" onclick="window.s.t();">Simulate Re-loading Pageview</button>
+            </div>
+
+            <!-- LINK CLICK DEMO -->
+            <div class="card">
+                <h2>2. Link Click Rule</h2>
+                <p>In Adobe Launch, this uses the <strong>Core - Click</strong> event mapping to anchor tags <code>a</code>. It captures destinations.</p>
+                <p>Fires an <code>s.tl()</code> call with link type set to <code>'e'</code> (Exit) or <code>'d'</code> (Download).</p>
+                
+                <!-- Explicit tracking attribute examples for Adobe Launch Data Elements -->
+                <a href="https://example.com/external-site" 
+                   class="link-element" 
+                   id="exit-link-example"
+                   data-tracking-name="Partner Exit Link" 
+                   target="_blank">
+                   Click here to visit an External Site &rarr;
+                </a>
+                <br>
+                <a href="/assets/brochure.pdf" 
+                   class="link-element" 
+                   id="download-link-example"
+                   data-tracking-name="Product Brochure PDF" 
+                   download>
+                   Click here to download PDF document &darr;
+                </a>
+            </div>
+
+            <!-- BUTTON CLICK DEMO -->
+            <div class="card">
+                <h2>3. Button / Custom Interaction Rule</h2>
+                <p>Triggers on specific on-page element selections using ID or CSS class selectors. Does not reload or change the URL path.</p>
+                <p>Fires an <code>s.tl()</code> call with link type set to <code>'o'</code> (Other Custom Link).</p>
+                
+                <div style="margin-top: 1rem;">
+                    <button id="cart-btn" class="btn" data-product="Premium Analytics Widget">Add to Cart</button>
+                </div>
+            </div>
+
+            <!-- VISUAL CONSOLE LOG -->
+            <div class="card console-card">
+                <h2>Adobe Analytics Network Payload Simulator</h2>
+                <p>This panel shows the data parameters exactly as they would be structured and transmitted to Adobe's data collection servers.</p>
+                <div class="console-log" id="consoleLog">
+                    <!-- Dynamic logs append here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. TRACKING INTERACTION SCRIPTS (Simulating Adobe Launch Rules) -->
+    <script>
+        // Automatically fire the initial pageview when the DOM tree finishes loading
+        document.addEventListener("DOMContentLoaded", function() {
+            window.s.t();
+
+            // Rule Configuration for Link Clicks
+            document.querySelectorAll('.link-element').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // Prevent actual navigation for external link demo purposes so you can read the console
+                    e.preventDefault(); 
+                    
+                    const linkName = this.getAttribute('data-tracking-name');
+                    const isDownload = this.hasAttribute('download');
+                    const linkType = isDownload ? 'd' : 'e'; // 'd' = download, 'e' = exit link
+                    
+                    window.s.tl(this, linkType, linkName, {
+                        "destinationUrl": this.getAttribute('href')
+                    });
+                });
+            });
+
+            // Rule Configuration for Button Click (e.g., Add to Cart)
+            const cartButton = document.getElementById('cart-btn');
+            if(cartButton) {
+                cartButton.addEventListener('click', function() {
+                    const productName = this.getAttribute('data-product');
+                    
+                    // Adobe Analytics Custom Link tracking execution
+                    window.s.tl(this, 'o', 'Add to Cart Clicked', {
+                        "contextData.events": "scAdd", // Set the Shopping Cart Add event standard to Adobe
+                        "contextData.products": `;${productName};1;;;` // Adobe standard product string format
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
