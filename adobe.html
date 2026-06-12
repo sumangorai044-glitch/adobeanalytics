@@ -3,274 +3,243 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adobe Analytics Tracking Sandbox</title>
+    <title>Random Element Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
-            --bg-primary: #111827;
-            --bg-secondary: #1f2937;
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-            --accent: #3b82f6;
-            --accent-hover: #2563eb;
-            --success: #10b981;
-            --warning: #f59e0b;
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-color: #1f2937;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             margin: 0;
-            padding: 2rem;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             min-height: 100vh;
         }
 
         .container {
-            max-width: 900px;
             width: 100%;
-        }
-
-        header {
-            margin-bottom: 2rem;
+            max-width: 800px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             text-align: center;
         }
 
-        h1 { margin-bottom: 0.5rem; color: #fff; }
-        p { color: var(--text-muted); margin-top: 0; }
-
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
-        @media (min-width: 768px) {
-            .grid { grid-template-columns: 1fr 1fr; }
+        h1 {
+            margin-bottom: 25px;
+            color: var(--primary-color);
         }
 
-        .card {
-            background-color: var(--bg-secondary);
-            border: 1px solid #374151;
-            border-radius: 8px;
-            padding: 1.5rem;
-        }
-
-        .card h2 {
-            margin-top: 0;
-            font-size: 1.25rem;
-            border-bottom: 1px solid #374151;
-            padding-bottom: 0.5rem;
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
         }
 
         .btn {
-            background-color: var(--accent);
+            background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 0.75rem 1.5rem;
+            padding: 12px 24px;
             font-size: 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.2s;
-            width: 100%;
             font-weight: 600;
-        }
-        .btn:hover { background-color: var(--accent-hover); }
-
-        .link-element {
-            display: inline-block;
-            color: #60a5fa;
-            text-decoration: none;
-            margin: 0.5rem 0;
-            font-weight: 500;
-        }
-        .link-element:hover { text-decoration: underline; }
-
-        /* Console styling */
-        .console-card {
-            grid-column: 1 / -1;
-        }
-        .console-log {
-            background-color: #030712;
-            border: 1px solid #1f2937;
             border-radius: 6px;
-            padding: 1rem;
-            font-family: "Courier New", Courier, monospace;
-            font-size: 0.875rem;
-            max-height: 250px;
-            overflow-y: auto;
-            color: #4ade80;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            text-decoration: none;
+            display: inline-block;
         }
-        .log-entry {
-            margin-bottom: 0.5rem;
-            border-left: 3px solid var(--accent);
-            padding-left: 0.5rem;
+
+        .btn:hover {
+            background-color: var(--primary-hover);
         }
-        .log-entry.pageview { border-color: var(--success); }
-        .log-entry.click { border-color: var(--warning); }
-        
-        .json-key { color: #f39c12; }
-        .json-string { color: #2ecc71; }
-        .json-number { color: #3498db; }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background-color: #10b981;
+        }
+        .btn-secondary:hover {
+            background-color: #059669;
+        }
+
+        .btn-danger {
+            background-color: #ef4444;
+        }
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: #000;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Hidden template for the PDF generation */
+        #pdf-template {
+            display: none;
+            padding: 40px;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+        .pdf-header {
+            border-bottom: 2px solid #4f46e5;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .pdf-section {
+            margin-bottom: 25px;
+        }
+        .pdf-placeholder-line {
+            height: 15px;
+            background-color: #f3f4f6;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
     </style>
-
-    <!-- 1. ADOBE DATA LAYER INITIALIZATION -->
-    <script>
-        // Customer Experience Digital Data Layer (CEDDL) format preferred by Adobe
-        window.digitalData = {
-            page: {
-                pageInfo: {
-                    pageName: "Sandbox: Rule Implementation Home",
-                    siteSection: "Analytics Education",
-                    server: "production-server-01"
-                }
-            },
-            user: {
-                profile: {
-                    attributes: {
-                        loggedInStatus: "anonymous"
-                    }
-                }
-            }
-        };
-
-        // Mocking Adobe's global s object for local simulation purposes
-        window.s = {
-            t: function() {
-                logAdobeBeacon("Pageview Beacon (s.t)", {
-                    pageName: window.digitalData.page.pageInfo.pageName,
-                    channel: window.digitalData.page.pageInfo.siteSection,
-                    server: window.digitalData.page.pageInfo.server
-                }, "pageview");
-            },
-            tl: function(element, linkType, linkName, contextData) {
-                logAdobeBeacon(`Custom Link Beacon (s.tl) - Type: ${linkType}`, {
-                    linkName: linkName,
-                    linkType: linkType,
-                    ...contextData
-                }, "click");
-            }
-        };
-
-        // Real-time UI logger helper
-        function logAdobeBeacon(title, data, type) {
-            setTimeout(() => {
-                const consoleDiv = document.getElementById('consoleLog');
-                if(!consoleDiv) return;
-                
-                const entry = document.createElement('div');
-                entry.className = `log-entry ${type}`;
-                
-                const timestamp = new Date().toLocaleTimeString();
-                let html = `<strong>[${timestamp}] ${title} fired successfully</strong><br>`;
-                html += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
-                
-                entry.innerHTML = html;
-                consoleDiv.insertBefore(entry, consoleDiv.firstChild);
-            }, 100);
-        }
-    </script>
 </head>
 <body>
 
     <div class="container">
-        <header>
-            <h1>Adobe Analytics Rule Tester</h1>
-            <p>A playground to see Pageviews, Link Clicks, and Button Clicks interact with the Data Layer.</p>
-        </header>
+        <h1>Interactive Web Dashboard</h1>
+        
+        <div class="button-group">
+            <button class="btn" onclick="changeVideo()">Shuffle Video</button>
+            
+            <button class="btn btn-secondary" onclick="goToRandomWebsite()">Surprise Website</button>
+            
+            <button class="btn btn-danger" onclick="downloadPDF()">Download PDF</button>
+        </div>
 
-        <div class="grid">
-            <!-- PAGEVIEW DEMO -->
-            <div class="card">
-                <h2>1. Pageview Rule</h2>
-                <p>In Adobe Launch, this rule is triggered by a <strong>Core - Library Loaded (Page Top)</strong> or <strong>Page Bottom</strong> event.</p>
-                <p>It automatically reads the global <code>digitalData</code> object and executes an <code>s.t()</code> call.</p>
-                <button class="btn" style="background-color: var(--success);" onclick="window.s.t();">Simulate Re-loading Pageview</button>
-            </div>
-
-            <!-- LINK CLICK DEMO -->
-            <div class="card">
-                <h2>2. Link Click Rule</h2>
-                <p>In Adobe Launch, this uses the <strong>Core - Click</strong> event mapping to anchor tags <code>a</code>. It captures destinations.</p>
-                <p>Fires an <code>s.tl()</code> call with link type set to <code>'e'</code> (Exit) or <code>'d'</code> (Download).</p>
-                
-                <!-- Explicit tracking attribute examples for Adobe Launch Data Elements -->
-                <a href="https://example.com/external-site" 
-                   class="link-element" 
-                   id="exit-link-example"
-                   data-tracking-name="Partner Exit Link" 
-                   target="_blank">
-                   Click here to visit an External Site &rarr;
-                </a>
-                <br>
-                <a href="/assets/brochure.pdf" 
-                   class="link-element" 
-                   id="download-link-example"
-                   data-tracking-name="Product Brochure PDF" 
-                   download>
-                   Click here to download PDF document &darr;
-                </a>
-            </div>
-
-            <!-- BUTTON CLICK DEMO -->
-            <div class="card">
-                <h2>3. Button / Custom Interaction Rule</h2>
-                <p>Triggers on specific on-page element selections using ID or CSS class selectors. Does not reload or change the URL path.</p>
-                <p>Fires an <code>s.tl()</code> call with link type set to <code>'o'</code> (Other Custom Link).</p>
-                
-                <div style="margin-top: 1rem;">
-                    <button id="cart-btn" class="btn" data-product="Premium Analytics Widget">Add to Cart</button>
-                </div>
-            </div>
-
-            <!-- VISUAL CONSOLE LOG -->
-            <div class="card console-card">
-                <h2>Adobe Analytics Network Payload Simulator</h2>
-                <p>This panel shows the data parameters exactly as they would be structured and transmitted to Adobe's data collection servers.</p>
-                <div class="console-log" id="consoleLog">
-                    <!-- Dynamic logs append here -->
-                </div>
-            </div>
+        <div class="video-container">
+            <iframe id="youtube-player" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
         </div>
     </div>
 
-    <!-- 2. TRACKING INTERACTION SCRIPTS (Simulating Adobe Launch Rules) -->
+    <div id="pdf-template">
+        <div class="pdf-header">
+            <h1 style="color: #4f46e5; margin: 0;">Generated Document Report</h1>
+            <p style="color: #666; font-size: 0.9rem;">Date: <span id="pdf-date"></span></p>
+        </div>
+        
+        <div class="pdf-section">
+            <h2 style="color: #1f2937;">1. Executive Summary</h2>
+            <div class="pdf-placeholder-line" style="width: 100%;"></div>
+            <div class="pdf-placeholder-line" style="width: 95%;"></div>
+            <div class="pdf-placeholder-line" style="width: 40%;"></div>
+        </div>
+
+        <div class="pdf-section">
+            <h2 style="color: #1f2937;">2. Data Analysis & Insights</h2>
+            <div class="pdf-placeholder-line" style="width: 100%;"></div>
+            <div class="pdf-placeholder-line" style="width: 85%;"></div>
+            <div class="pdf-placeholder-line" style="width: 90%;"></div>
+            <div class="pdf-placeholder-line" style="width: 60%;"></div>
+        </div>
+
+        <div class="pdf-section">
+            <h2 style="color: #1f2937;">3. Conclusion & Next Steps</h2>
+            <div class="pdf-placeholder-line" style="width: 95%;"></div>
+            <div class="pdf-placeholder-line" style="width: 30%;"></div>
+        </div>
+    </div>
+
     <script>
-        // Automatically fire the initial pageview when the DOM tree finishes loading
-        document.addEventListener("DOMContentLoaded", function() {
-            window.s.t();
+        // Array of curated YouTube Video IDs
+        const videoIds = [
+            'dQw4w9WgXcQ', // Rick Astley
+            '9bZkp7q19f0', // PSY - GANGNAM STYLE
+            'kJQP7kiw5Fk', // Despacito
+            'jNQXAC9IVRw', // Me at the zoo (First YT video)
+            '9767_RkY6Zk', // Lofi Hip Hop
+            'W3q8Od5qJio', // Maroon 5 - Sugar
+            'V1Pl8CzNzCw'  // Billie Eilish - Bad Guy
+        ];
 
-            // Rule Configuration for Link Clicks
-            document.querySelectorAll('.link-element').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    // Prevent actual navigation for external link demo purposes so you can read the console
-                    e.preventDefault(); 
-                    
-                    const linkName = this.getAttribute('data-tracking-name');
-                    const isDownload = this.hasAttribute('download');
-                    const linkType = isDownload ? 'd' : 'e'; // 'd' = download, 'e' = exit link
-                    
-                    window.s.tl(this, linkType, linkName, {
-                        "destinationUrl": this.getAttribute('href')
-                    });
-                });
+        // Array of random external websites
+        const websites = [
+            'https://www.wikipedia.org',
+            'https://www.github.com',
+            'https://www.reddit.com',
+            'https://www.nasa.gov',
+            'https://www.ted.com',
+            'https://www.bbc.com',
+            'https://www.nature.com'
+        ];
+
+        // Function to shuffle and change the YouTube Video
+        function changeVideo() {
+            const player = document.getElementById('youtube-player');
+            const currentSrc = player.src;
+            let randomId;
+            
+            // Loop to ensure we get a different video than the one currently playing
+            do {
+                randomId = videoIds[Math.floor(Math.random() * videoIds.length)];
+            } while (currentSrc.includes(randomId));
+
+            player.src = `https://www.youtube.com/embed/${randomId}?autoplay=1`;
+        }
+
+        // Function to open a random website in a new tab
+        function goToRandomWebsite() {
+            const randomUrl = websites[Math.floor(Math.random() * websites.length)];
+            window.open(randomUrl, '_blank');
+        }
+
+        // Function to generate and download the PDF
+        function downloadPDF() {
+            // Set current date in the PDF template dynamically
+            document.getElementById('pdf-date').innerText = new Date().toLocaleDateString();
+
+            const element = document.getElementById('pdf-template');
+            
+            // Temporarily show element for html2pdf to capture it accurately
+            element.style.display = 'block';
+
+            const options = {
+                margin:       10,
+                filename:     'Generated_Report.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, logging: false },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // Generate PDF, then hide the template container again
+            html2pdf().from(element).set(options).save().then(() => {
+                element.style.display = 'none';
             });
-
-            // Rule Configuration for Button Click (e.g., Add to Cart)
-            const cartButton = document.getElementById('cart-btn');
-            if(cartButton) {
-                cartButton.addEventListener('click', function() {
-                    const productName = this.getAttribute('data-product');
-                    
-                    // Adobe Analytics Custom Link tracking execution
-                    window.s.tl(this, 'o', 'Add to Cart Clicked', {
-                        "contextData.events": "scAdd", // Set the Shopping Cart Add event standard to Adobe
-                        "contextData.products": `;${productName};1;;;` // Adobe standard product string format
-                    });
-                });
-            }
-        });
+        }
     </script>
 </body>
 </html>
